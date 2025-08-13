@@ -46,21 +46,49 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmount
   }
 
   return (
-    <Card sx={{ mb: 2 }}>
+    <Card 
+      sx={{ 
+        mb: 2,
+        transition: 'all 0.3s ease-in-out',
+        cursor: 'pointer',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+          backgroundColor: 'rgba(25, 118, 210, 0.02)'
+        }
+      }}
+    >
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           {/* Product Image */}
           <Avatar
             src={product.image}
             variant="rounded"
-            sx={{ width: 80, height: 80 }}
+            sx={{ 
+              width: 80, 
+              height: 80,
+              transition: 'transform 0.3s ease-in-out',
+              '&:hover': {
+                transform: 'scale(1.05)'
+              }
+            }}
           >
             {product.title.charAt(0)}
           </Avatar>
 
           {/* Product Details */}
           <Box sx={{ flex: 1 }}>
-            <Typography variant="h6" component="h3" gutterBottom>
+            <Typography 
+              variant="h6" 
+              component="h3" 
+              gutterBottom
+              sx={{
+                transition: 'color 0.3s ease-in-out',
+                '&:hover': {
+                  color: 'primary.main'
+                }
+              }}
+            >
               {product.title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
@@ -74,6 +102,14 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmount
               onClick={handleDecrement}
               disabled={currentAmount <= 1}
               size="small"
+              sx={{
+                transition: 'all 0.2s ease-in-out',
+                '&:hover:not(:disabled)': {
+                  backgroundColor: 'error.light',
+                  color: 'error.contrastText',
+                  transform: 'scale(1.1)'
+                }
+              }}
             >
               <Remove />
             </IconButton>
@@ -88,13 +124,38 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmount
                 style: { textAlign: 'center', width: 60 }
               }}
               size="small"
-              sx={{ width: 80 }}
+              sx={{ 
+                width: 80,
+                '& .MuiOutlinedInput-root': {
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                      borderWidth: '2px'
+                    }
+                  },
+                  '&.Mui-focused': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'primary.main',
+                      borderWidth: '2px'
+                    }
+                  }
+                }
+              }}
             />
             
             <IconButton
               onClick={handleIncrement}
               disabled={currentAmount >= 10}
               size="small"
+              sx={{
+                transition: 'all 0.2s ease-in-out',
+                '&:hover:not(:disabled)': {
+                  backgroundColor: 'success.light',
+                  color: 'success.contrastText',
+                  transform: 'scale(1.1)'
+                }
+              }}
             >
               <Add />
             </IconButton>
