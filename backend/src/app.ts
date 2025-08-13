@@ -4,9 +4,12 @@ import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import { createAuthRoutes } from './routes/authRoutes';
+import { createOrderRoutes } from './routes/orderRoutes';
 import { AuthController } from './controllers/authController';
+import { OrderController } from './controllers/orderController';
 import { AuthService } from './services/authService';
-import { InMemoryUserRepository, InMemoryAuthRepository } from './repositories/implementations';
+import { OrderService } from './services/orderService';
+import { InMemoryUserRepository, InMemoryAuthRepository, InMemoryOrderRepository, InMemoryProductRepository } from './repositories/implementations';
 
 export class App {
   public app: express.Application;
@@ -23,21 +26,29 @@ export class App {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    
+    // Serve static files for product images
+    this.app.use('/productImg', express.static('public/productImg'));
   }
 
   private initializeRoutes(): void {
     // Initialize repositories
     const userRepository = new InMemoryUserRepository();
     const authRepository = new InMemoryAuthRepository();
+    const orderRepository = new InMemoryOrderRepository();
+    const productRepository = new InMemoryProductRepository();
 
     // Initialize services
     const authService = new AuthService(authRepository, userRepository);
+    const orderService = new OrderService(orderRepository, productRepository);
 
     // Initialize controllers
     const authController = new AuthController(authService);
+    const orderController = new OrderController(orderService, authService);
 
     // Setup routes
     this.app.use('/api', createAuthRoutes(authController));
+    this.app.use('/api/order', createOrderRoutes(orderController));
 
     // Health check endpoint
     this.app.get('/health', (req, res) => {
@@ -52,7 +63,8 @@ export class App {
         endpoints: {
           docs: '/api-docs',
           health: '/health',
-          login: '/api/login'
+          login: '/api/login',
+          orders: '/api/order'
         }
       });
     });

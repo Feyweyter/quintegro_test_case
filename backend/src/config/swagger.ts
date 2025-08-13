@@ -15,6 +15,13 @@ const options: swaggerJsdoc.Options = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      },
       schemas: {
         UserRecord: {
           type: 'object',
@@ -79,6 +86,116 @@ const options: swaggerJsdoc.Options = {
             }
           },
           required: ['token']
+        },
+        ProductRecord: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              description: 'Unique product identifier',
+              example: 'product-1'
+            },
+            title: {
+              type: 'string',
+              description: 'Product title',
+              example: 'Laptop'
+            },
+            description: {
+              type: 'string',
+              description: 'Product description (max 300 characters)',
+              example: 'High-performance laptop with latest specifications and great battery life. Perfect for work and gaming.'
+            },
+            image: {
+              type: 'string',
+              description: 'URL to product image',
+              example: '/productImg/laptop.svg'
+            }
+          },
+          required: ['id', 'title', 'description', 'image']
+        },
+        OrderRecord: {
+          type: 'object',
+          properties: {
+            orderId: {
+              type: 'string',
+              description: 'Unique order identifier',
+              example: 'order-1'
+            },
+            userId: {
+              type: 'string',
+              description: 'ID of user who owns the order',
+              example: 'user-1'
+            },
+            status: {
+              type: 'string',
+              enum: ['created', 'submited', 'finished'],
+              description: 'Order status',
+              example: 'finished'
+            },
+            createAt: {
+              type: 'number',
+              description: 'Creation timestamp',
+              example: 1703123456789
+            },
+            products: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                    description: 'Product ID',
+                    example: 'product-1'
+                  },
+                  amount: {
+                    type: 'number',
+                    minimum: 0,
+                    maximum: 10,
+                    description: 'Product quantity (0-10)',
+                    example: 1
+                  }
+                },
+                required: ['id', 'amount']
+              }
+            }
+          },
+          required: ['orderId', 'userId', 'status', 'createAt', 'products']
+        },
+        OrderDTO: {
+          type: 'object',
+          properties: {
+            orderId: {
+              type: 'string',
+              description: 'Unique order identifier',
+              example: 'order-1'
+            },
+            status: {
+              type: 'string',
+              enum: ['created', 'submited', 'finished'],
+              description: 'Order status',
+              example: 'finished'
+            },
+            products: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  product: {
+                    $ref: '#/components/schemas/ProductRecord'
+                  },
+                  amount: {
+                    type: 'number',
+                    minimum: 1,
+                    maximum: 10,
+                    description: 'Product quantity (1-10)',
+                    example: 1
+                  }
+                },
+                required: ['product', 'amount']
+              }
+            }
+          },
+          required: ['orderId', 'status', 'products']
         }
       }
     }

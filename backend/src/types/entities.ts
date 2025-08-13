@@ -17,3 +17,30 @@ export interface LoginRequest {
 export interface LoginResponse {
   token: string;
 }
+
+export interface ProductRecord {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+export interface OrderRecord {
+  orderId: string;
+  userId: string;
+  status: 'created' | 'submited' | 'finished';
+  createAt: number;
+  products: Array<{
+    id: string;
+    amount: number;
+  }>;
+}
+
+export interface OrderDTO {
+  orderId: string;
+  status: 'created' | 'submited' | 'finished';
+  products: Array<{
+    product: ProductRecord;
+    amount: number;
+  }>;
+}
