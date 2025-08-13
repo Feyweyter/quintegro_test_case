@@ -5,6 +5,7 @@ import {
   Typography,
   Box
 } from '@mui/material'
+import UserProfile from './UserProfile'
 
 const HeaderComponent: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const HeaderComponent: React.FC = () => {
             Quintegro Frontend
           </Typography>
         </Box>
+        <UserProfile />
       </Toolbar>
     </AppBar>
   )
