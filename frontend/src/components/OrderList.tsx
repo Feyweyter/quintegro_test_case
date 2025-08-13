@@ -1,0 +1,138 @@
+import React, { useState, useEffect } from 'react'
+import {
+  Box,
+  Typography,
+  CircularProgress,
+  Alert
+} from '@mui/material'
+import OrderListItem from './OrderListItem'
+
+interface Product {
+  id: string
+  title: string
+  description: string
+  image: string
+}
+
+interface OrderItem {
+  product: Product
+  amount: number
+}
+
+interface Order {
+  orderId: string
+  status: 'created' | 'submited' | 'finished'
+  products: OrderItem[]
+}
+
+const OrderList: React.FC = () => {
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchOrders()
+  }, [])
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        setError('Authentication required')
+        setLoading(false)
+        return
+      }
+
+      const response = await fetch('/api/order', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        if (response.status === 403) {
+          setError('Access denied. Please login again.')
+        } else {
+          setError('Failed to fetch orders')
+        }
+        return
+      }
+
+      const data = await response.json()
+      setOrders(data)
+    } catch (err) {
+      setError('An error occurred while fetching orders')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleAmountChange = (productId: string, newAmount: number) => {
+    setOrders(prevOrders => 
+      prevOrders.map(order => ({
+        ...order,
+        products: order.products.map(item => 
+          item.product.id === productId 
+            ? { ...item, amount: newAmount }
+            : item
+        )
+      }))
+    )
+  }
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (error) {
+    return (
+      <Alert severity="error" sx={{ mb: 2 }}>
+        {error}
+      </Alert>
+    )
+  }
+
+  if (orders.length === 0) {
+    return (
+      <Box sx={{ textAlign: 'center', py: 4 }}>
+        <Typography variant="h6" color="text.secondary">
+          No orders found
+        </Typography>
+      </Box>
+    )
+  }
+
+  return (
+    <Box>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Your Orders
+      </Typography>
+      
+      {orders.map((order) => (
+        <Box key={order.orderId} sx={{ mb: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Order #{order.orderId} - {order.status}
+          </Typography>
+          
+          {order.products.map((item) => (
+            <OrderListItem
+              key={item.product.id}
+              product={item.product}
+              amount={item.amount}
+              onAmountChange={handleAmountChange}
+            />
+          ))}
+        </Box>
+      ))}
+    </Box>
+  )
+}
+
+export default OrderList

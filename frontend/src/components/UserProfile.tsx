@@ -3,7 +3,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Avatar,
   Typography
 } from '@mui/material'
 import { AccountCircle } from '@mui/icons-material'
