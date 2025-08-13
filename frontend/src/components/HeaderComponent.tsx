@@ -6,6 +6,7 @@ import {
   Box
 } from '@mui/material'
 import UserProfile from './UserProfile'
+import CurrentOrder from './CurrentOrder'
 
 const HeaderComponent: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const HeaderComponent: React.FC = () => {
             Quintegro Frontend
           </Typography>
         </Box>
+        <CurrentOrder />
         <UserProfile />
       </Toolbar>
     </AppBar>
