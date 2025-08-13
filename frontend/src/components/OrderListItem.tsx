@@ -8,7 +8,7 @@ import {
   IconButton,
   Avatar
 } from '@mui/material'
-import { Add, Remove } from '@mui/icons-material'
+import { Add, Remove, Delete } from '@mui/icons-material'
 
 interface OrderListItemProps {
   product: {
@@ -19,9 +19,10 @@ interface OrderListItemProps {
   }
   amount: number
   onAmountChange: (productId: string, newAmount: number) => void
+  onDelete: (productId: string) => void
 }
 
-const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmountChange }) => {
+const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmountChange, onDelete }) => {
   const [currentAmount, setCurrentAmount] = useState(amount)
 
   const handleAmountChange = (newAmount: number) => {
@@ -43,6 +44,10 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmount
     if (!isNaN(value)) {
       handleAmountChange(value)
     }
+  }
+
+  const handleDelete = () => {
+    onDelete(product.id)
   }
 
   return (
@@ -158,6 +163,23 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmount
               }}
             >
               <Add />
+            </IconButton>
+
+            {/* Delete Button */}
+            <IconButton
+              onClick={handleDelete}
+              size="small"
+              sx={{
+                transition: 'all 0.2s ease-in-out',
+                color: 'error.main',
+                '&:hover': {
+                  backgroundColor: 'error.light',
+                  color: 'error.contrastText',
+                  transform: 'scale(1.1)'
+                }
+              }}
+            >
+              <Delete />
             </IconButton>
           </Box>
         </Box>

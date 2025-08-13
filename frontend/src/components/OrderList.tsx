@@ -83,6 +83,15 @@ const OrderList: React.FC = () => {
     )
   }
 
+  const handleDelete = (productId: string) => {
+    setOrders(prevOrders => 
+      prevOrders.map(order => ({
+        ...order,
+        products: order.products.filter(item => item.product.id !== productId)
+      })).filter(order => order.products.length > 0)
+    )
+  }
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -127,6 +136,7 @@ const OrderList: React.FC = () => {
               product={item.product}
               amount={item.amount}
               onAmountChange={handleAmountChange}
+              onDelete={handleDelete}
             />
           ))}
         </Box>
