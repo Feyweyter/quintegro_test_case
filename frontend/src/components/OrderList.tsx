@@ -17,6 +17,7 @@ interface Product {
 interface OrderItem {
   product: Product
   amount: number
+  price: number
 }
 
 interface Order {
@@ -135,6 +136,7 @@ const OrderList: React.FC = () => {
               key={item.product.id}
               product={item.product}
               amount={item.amount}
+              price={item.price}
               onAmountChange={handleAmountChange}
               onDelete={handleDelete}
             />

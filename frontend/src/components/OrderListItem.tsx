@@ -18,11 +18,12 @@ interface OrderListItemProps {
     image: string
   }
   amount: number
+  price: number
   onAmountChange: (productId: string, newAmount: number) => void
   onDelete: (productId: string) => void
 }
 
-const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmountChange, onDelete }) => {
+const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, onAmountChange, onDelete }) => {
   const [currentAmount, setCurrentAmount] = useState(amount)
 
   const handleAmountChange = (newAmount: number) => {
@@ -102,85 +103,100 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, onAmount
           </Box>
 
           {/* Amount Controls */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              onClick={handleDecrement}
-              disabled={currentAmount <= 1}
-              size="small"
-              sx={{
-                transition: 'all 0.2s ease-in-out',
-                '&:hover:not(:disabled)': {
-                  backgroundColor: 'error.light',
-                  color: 'error.contrastText',
-                  transform: 'scale(1.1)'
-                }
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 1 }}>
+            {/* Price Display */}
+            <Typography 
+              variant="h6" 
+              color="primary.main"
+              sx={{ 
+                fontWeight: 'bold',
+                fontSize: '1.1rem'
               }}
             >
-              <Remove />
-            </IconButton>
-            
-            <TextField
-              type="number"
-              value={currentAmount}
-              onChange={handleInputChange}
-              inputProps={{
-                min: 1,
-                max: 10,
-                style: { textAlign: 'center', width: 60 }
-              }}
-              size="small"
-              sx={{ 
-                width: 80,
-                '& .MuiOutlinedInput-root': {
-                  transition: 'all 0.3s ease-in-out',
-                  '&:hover': {
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main',
-                      borderWidth: '2px'
-                    }
-                  },
-                  '&.Mui-focused': {
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main',
-                      borderWidth: '2px'
+              ${price.toFixed(2)}
+            </Typography>
+
+            {/* Amount Controls */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <IconButton
+                onClick={handleDecrement}
+                disabled={currentAmount <= 1}
+                size="small"
+                sx={{
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover:not(:disabled)': {
+                    backgroundColor: 'error.light',
+                    color: 'error.contrastText',
+                    transform: 'scale(1.1)'
+                  }
+                }}
+              >
+                <Remove />
+              </IconButton>
+              
+              <TextField
+                type="number"
+                value={currentAmount}
+                onChange={handleInputChange}
+                inputProps={{
+                  min: 1,
+                  max: 10,
+                  style: { textAlign: 'center', width: 60 }
+                }}
+                size="small"
+                sx={{ 
+                  width: 80,
+                  '& .MuiOutlinedInput-root': {
+                    transition: 'all 0.3s ease-in-out',
+                    '&:hover': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'primary.main',
+                        borderWidth: '2px'
+                      }
+                    },
+                    '&.Mui-focused': {
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'primary.main',
+                        borderWidth: '2px'
+                      }
                     }
                   }
-                }
-              }}
-            />
-            
-            <IconButton
-              onClick={handleIncrement}
-              disabled={currentAmount >= 10}
-              size="small"
-              sx={{
-                transition: 'all 0.2s ease-in-out',
-                '&:hover:not(:disabled)': {
-                  backgroundColor: 'success.light',
-                  color: 'success.contrastText',
-                  transform: 'scale(1.1)'
-                }
-              }}
-            >
-              <Add />
-            </IconButton>
+                }}
+              />
+              
+              <IconButton
+                onClick={handleIncrement}
+                disabled={currentAmount >= 10}
+                size="small"
+                sx={{
+                  transition: 'all 0.2s ease-in-out',
+                  '&:hover:not(:disabled)': {
+                    backgroundColor: 'success.light',
+                    color: 'success.contrastText',
+                    transform: 'scale(1.1)'
+                  }
+                }}
+              >
+                <Add />
+              </IconButton>
 
-            {/* Delete Button */}
-            <IconButton
-              onClick={handleDelete}
-              size="small"
-              sx={{
-                transition: 'all 0.2s ease-in-out',
-                color: 'error.main',
-                '&:hover': {
-                  backgroundColor: 'error.light',
-                  color: 'error.contrastText',
-                  transform: 'scale(1.1)'
-                }
-              }}
-            >
-              <Delete />
-            </IconButton>
+              {/* Delete Button */}
+              <IconButton
+                onClick={handleDelete}
+                size="small"
+                sx={{
+                  transition: 'all 0.2s ease-in-out',
+                  color: 'error.main',
+                  '&:hover': {
+                    backgroundColor: 'error.light',
+                    color: 'error.contrastText',
+                    transform: 'scale(1.1)'
+                  }
+                }}
+              >
+                <Delete />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
       </CardContent>
