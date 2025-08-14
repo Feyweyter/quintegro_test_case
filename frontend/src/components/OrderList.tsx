@@ -137,6 +137,7 @@ const OrderList: React.FC = () => {
               product={item.product}
               amount={item.amount}
               price={item.price}
+              orderId={order.orderId}
               onAmountChange={handleAmountChange}
               onDelete={handleDelete}
             />

@@ -104,4 +104,31 @@ export class OrderController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  async deleteProductFromOrder(req: Request, res: Response) {
+    try {
+      const userId = this.extractUserIdFromToken(req);
+      
+      if (!userId) {
+        return res.status(403).json({ error: 'Invalid or missing authentication token' });
+      }
+
+      const { orderId, productId } = req.params;
+
+      if (!orderId || !productId) {
+        return res.status(400).json({ error: 'Order ID and Product ID are required' });
+      }
+
+      const updatedOrder = await this.orderService.deleteProductFromOrder(orderId, productId, userId);
+
+      if (!updatedOrder) {
+        return res.status(404).json({ error: 'Order not found or access denied' });
+      }
+
+      return res.status(200).json(updatedOrder);
+    } catch (error) {
+      console.error('Delete product from order error:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }

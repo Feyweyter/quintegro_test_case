@@ -32,6 +32,35 @@ export class OrderService {
     }, 0);
   }
 
+  async deleteProductFromOrder(orderId: string, productId: string, userId: string): Promise<OrderDTO | null> {
+    const order = this.orderRepository.findById(orderId);
+    
+    if (!order) {
+      return null;
+    }
+
+    if (order.userId !== userId) {
+      return null;
+    }
+
+    // Remove the product from the order
+    const updatedProducts = order.products.filter(item => item.id !== productId);
+    
+    // If no products left, return null (order would be empty)
+    if (updatedProducts.length === 0) {
+      return null;
+    }
+
+    // Create updated order record
+    const updatedOrder: OrderRecord = {
+      ...order,
+      products: updatedProducts
+    };
+
+    // Transform to DTO and return
+    return this.transformToDTO(updatedOrder);
+  }
+
   private transformToDTO(order: OrderRecord): OrderDTO {
     const products = order.products.map(item => {
       const product = this.productRepository.findById(item.id);

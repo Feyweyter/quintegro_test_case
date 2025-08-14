@@ -19,11 +19,12 @@ interface OrderListItemProps {
   }
   amount: number
   price: number
+  orderId: string
   onAmountChange: (productId: string, newAmount: number) => void
   onDelete: (productId: string) => void
 }
 
-const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, onAmountChange, onDelete }) => {
+const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, orderId, onAmountChange, onDelete }) => {
   const [currentAmount, setCurrentAmount] = useState(amount)
 
   const handleAmountChange = (newAmount: number) => {
@@ -47,8 +48,29 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
     }
   }
 
-  const handleDelete = () => {
-    onDelete(product.id)
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        console.error('No authentication token found')
+        return
+      }
+
+      const response = await fetch(`/api/order/${orderId}/${product.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.ok) {
+        onDelete(product.id)
+      } else {
+        console.error('Failed to delete product:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error)
+    }
   }
 
   return (
