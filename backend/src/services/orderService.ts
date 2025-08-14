@@ -57,6 +57,40 @@ export class OrderService {
       products: updatedProducts
     };
 
+    // Update the in-memory repository
+    this.updateOrder(updatedOrder);
+
+    // Transform to DTO and return
+    return this.transformToDTO(updatedOrder);
+  }
+
+  async updateProductAmount(orderId: string, productId: string, newAmount: number, userId: string): Promise<OrderDTO | null> {
+    const order = this.orderRepository.findById(orderId);
+    
+    if (!order) {
+      return null;
+    }
+
+    if (order.userId !== userId) {
+      return null;
+    }
+
+    // Update the product amount
+    const updatedProducts = order.products.map(item => 
+      item.id === productId 
+        ? { ...item, amount: Math.max(1, Math.min(10, newAmount)) }
+        : item
+    );
+
+    // Create updated order record
+    const updatedOrder: OrderRecord = {
+      ...order,
+      products: updatedProducts
+    };
+
+    // Update the in-memory repository
+    this.updateOrder(updatedOrder);
+
     // Transform to DTO and return
     return this.transformToDTO(updatedOrder);
   }
@@ -83,9 +117,16 @@ export class OrderService {
       status: 'submited'
     };
 
-    // In a real application, you would save this to the repository
-    // For now, we'll just return success
+    // Update the in-memory repository
+    this.updateOrder(updatedOrder);
     return true;
+  }
+
+  private updateOrder(updatedOrder: OrderRecord): void {
+    // Update the order in the in-memory repository
+    // This method should be called whenever order state changes
+    this.orderRepository.update(updatedOrder);
+    console.log(`Order ${updatedOrder.orderId} updated in repository`);
   }
 
   private transformToDTO(order: OrderRecord): OrderDTO {

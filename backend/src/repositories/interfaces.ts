@@ -15,6 +15,7 @@ export interface IOrderRepository {
   findById(orderId: string): OrderRecord | undefined;
   findByUserId(userId: string): OrderRecord[];
   findAll(): OrderRecord[];
+  update(order: OrderRecord): void;
 }
 
 export interface IProductRepository {

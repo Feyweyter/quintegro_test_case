@@ -123,4 +123,11 @@ export class InMemoryOrderRepository implements IOrderRepository {
   findAll(): OrderRecord[] {
     return [...this.orders];
   }
+
+  update(order: OrderRecord): void {
+    const index = this.orders.findIndex(o => o.orderId === order.orderId);
+    if (index !== -1) {
+      this.orders[index] = order;
+    }
+  }
 }
