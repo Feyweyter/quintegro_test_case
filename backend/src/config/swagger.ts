@@ -208,6 +208,28 @@ const options: swaggerJsdoc.Options = {
             }
           },
           required: ['orderId', 'status', 'products']
+        },
+        PromoEntity: {
+          type: 'object',
+          properties: {
+            id: {
+              type: 'string',
+              description: 'Human readable short code (unique)',
+              example: 'SAVE10'
+            },
+            discount: {
+              type: 'number',
+              enum: [5, 10, 20],
+              description: 'Discount percentage',
+              example: 10
+            },
+            dueDate: {
+              type: 'number',
+              description: 'Expiration timestamp',
+              example: 1703123456789
+            }
+          },
+          required: ['id', 'discount', 'dueDate']
         }
       }
     }

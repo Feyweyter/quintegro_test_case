@@ -46,3 +46,9 @@ export interface OrderDTO {
     price: number;
   }>;
 }
+
+export interface PromoEntity {
+  id: string;
+  discount: number;
+  dueDate: number;
+}

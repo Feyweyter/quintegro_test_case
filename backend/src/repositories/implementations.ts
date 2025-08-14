@@ -1,5 +1,5 @@
-import { UserRecord, AuthRecord, OrderRecord, ProductRecord } from '../types/entities';
-import { IUserRepository, IAuthRepository, IOrderRepository, IProductRepository } from './interfaces';
+import { UserRecord, AuthRecord, OrderRecord, ProductRecord, PromoEntity } from '../types/entities';
+import { IUserRepository, IAuthRepository, IOrderRepository, IProductRepository, IPromoRepository } from './interfaces';
 
 export class InMemoryUserRepository implements IUserRepository {
   private users: UserRecord[] = [
@@ -129,5 +129,33 @@ export class InMemoryOrderRepository implements IOrderRepository {
     if (index !== -1) {
       this.orders[index] = order;
     }
+  }
+}
+
+export class InMemoryPromoRepository implements IPromoRepository {
+  private promos: PromoEntity[] = [
+    {
+      id: "SAVE10",
+      discount: 10,
+      dueDate: Date.now() + (30 * 24 * 60 * 60 * 1000) // 30 days from now
+    },
+    {
+      id: "SAVE20",
+      discount: 20,
+      dueDate: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days from now
+    },
+    {
+      id: "SAVE5",
+      discount: 5,
+      dueDate: Date.now() - (24 * 60 * 60 * 1000) // 1 day ago (expired)
+    }
+  ];
+
+  findById(id: string): PromoEntity | undefined {
+    return this.promos.find(promo => promo.id === id);
+  }
+
+  findAll(): PromoEntity[] {
+    return [...this.promos];
   }
 }

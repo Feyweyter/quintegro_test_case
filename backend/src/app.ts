@@ -5,11 +5,14 @@ import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import { createAuthRoutes } from './routes/authRoutes';
 import { createOrderRoutes } from './routes/orderRoutes';
+import { createPromoRoutes } from './routes/promoRoutes';
 import { AuthController } from './controllers/authController';
 import { OrderController } from './controllers/orderController';
+import { PromoController } from './controllers/promoController';
 import { AuthService } from './services/authService';
 import { OrderService } from './services/orderService';
-import { InMemoryUserRepository, InMemoryAuthRepository, InMemoryOrderRepository, InMemoryProductRepository } from './repositories/implementations';
+import { PromoService } from './services/promoService';
+import { InMemoryUserRepository, InMemoryAuthRepository, InMemoryOrderRepository, InMemoryProductRepository, InMemoryPromoRepository } from './repositories/implementations';
 
 export class App {
   public app: express.Application;
@@ -37,18 +40,22 @@ export class App {
     const authRepository = new InMemoryAuthRepository();
     const orderRepository = new InMemoryOrderRepository();
     const productRepository = new InMemoryProductRepository();
+    const promoRepository = new InMemoryPromoRepository();
 
     // Initialize services
     const authService = new AuthService(authRepository, userRepository);
     const orderService = new OrderService(orderRepository, productRepository);
+    const promoService = new PromoService(promoRepository);
 
     // Initialize controllers
     const authController = new AuthController(authService);
     const orderController = new OrderController(orderService, authService);
+    const promoController = new PromoController(promoService);
 
     // Setup routes
     this.app.use('/api', createAuthRoutes(authController));
     this.app.use('/api/order', createOrderRoutes(orderController));
+    this.app.use('/api/promo', createPromoRoutes(promoController));
 
     // Health check endpoint
     this.app.get('/health', (req, res) => {
@@ -64,7 +71,8 @@ export class App {
           docs: '/api-docs',
           health: '/health',
           login: '/api/login',
-          orders: '/api/order'
+          orders: '/api/order',
+          promos: '/api/promo'
         }
       });
     });

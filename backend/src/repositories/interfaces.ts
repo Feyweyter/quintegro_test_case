@@ -1,4 +1,4 @@
-import { UserRecord, AuthRecord, OrderRecord, ProductRecord } from '../types/entities';
+import { UserRecord, AuthRecord, OrderRecord, ProductRecord, PromoEntity } from '../types/entities';
 
 export interface IUserRepository {
   findById(id: string): UserRecord | undefined;
@@ -21,4 +21,9 @@ export interface IOrderRepository {
 export interface IProductRepository {
   findById(id: string): ProductRecord | undefined;
   findAll(): ProductRecord[];
+}
+
+export interface IPromoRepository {
+  findById(id: string): PromoEntity | undefined;
+  findAll(): PromoEntity[];
 }
