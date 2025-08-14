@@ -153,9 +153,15 @@ const options: swaggerJsdoc.Options = {
                     maximum: 10,
                     description: 'Product quantity (0-10)',
                     example: 1
+                  },
+                  price: {
+                    type: 'number',
+                    minimum: 0,
+                    description: 'Product price',
+                    example: 1299.99
                   }
                 },
-                required: ['id', 'amount']
+                required: ['id', 'amount', 'price']
               }
             }
           },
@@ -189,9 +195,15 @@ const options: swaggerJsdoc.Options = {
                     maximum: 10,
                     description: 'Product quantity (1-10)',
                     example: 1
+                  },
+                  price: {
+                    type: 'number',
+                    minimum: 0,
+                    description: 'Product price',
+                    example: 1299.99
                   }
                 },
-                required: ['product', 'amount']
+                required: ['product', 'amount', 'price']
               }
             }
           },

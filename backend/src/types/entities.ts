@@ -33,6 +33,7 @@ export interface OrderRecord {
   products: Array<{
     id: string;
     amount: number;
+    price: number;
   }>;
 }
 
@@ -42,5 +43,6 @@ export interface OrderDTO {
   products: Array<{
     product: ProductRecord;
     amount: number;
+    price: number;
   }>;
 }

@@ -35,17 +35,22 @@ export class OrderService {
       
       return {
         product,
-        amount: Math.max(1, Math.min(10, item.amount)) // Ensure amount is between 1-10
+        amount: Math.max(1, Math.min(10, item.amount)), // Ensure amount is between 1-10
+        price: item.price
       };
     });
 
     // Remove duplicates and sum amounts for same products
-    const uniqueProducts = new Map<string, { product: ProductRecord; amount: number }>();
+    const uniqueProducts = new Map<string, { product: ProductRecord; amount: number; price: number }>();
     
     products.forEach(item => {
       const existing = uniqueProducts.get(item.product.id);
       if (existing) {
         existing.amount = Math.min(10, existing.amount + item.amount);
+        // Keep the first price encountered for the product
+        if (!existing.price) {
+          existing.price = item.price;
+        }
       } else {
         uniqueProducts.set(item.product.id, item);
       }
