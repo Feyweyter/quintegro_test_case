@@ -6,6 +6,7 @@ import {
   Alert
 } from '@mui/material'
 import OrderListItem from './OrderListItem'
+import OrderSum from './OrderSum'
 
 interface Product {
   id: string
@@ -142,6 +143,8 @@ const OrderList: React.FC = () => {
               onDelete={handleDelete}
             />
           ))}
+          
+          <OrderSum orderId={order.orderId} products={order.products} />
         </Box>
       ))}
     </Box>
