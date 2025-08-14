@@ -263,5 +263,67 @@ export function createOrderRoutes(orderController: OrderController): Router {
    */
   router.delete('/:orderId/:productId', (req, res) => orderController.deleteProductFromOrder(req, res));
 
+  /**
+   * @swagger
+   * /order/{orderId}:
+   *   post:
+   *     summary: Submit an order (change status to 'submited')
+   *     tags: [Orders]
+   *     security:
+   *       - bearerAuth: []
+   *     parameters:
+   *       - in: path
+   *         name: orderId
+   *         required: true
+   *         schema:
+   *           type: string
+   *         description: Unique identifier of the order
+   *         example: "order-1"
+   *     responses:
+   *       200:
+   *         description: Order submitted successfully
+   *       400:
+   *         description: Bad request - Missing order ID
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: "Order ID is required"
+   *       403:
+   *         description: Forbidden - Invalid authentication token
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: "Invalid or missing authentication token"
+   *       404:
+   *         description: Order not found or access denied
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: "Order not found or access denied"
+   *       500:
+   *         description: Internal server error
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 error:
+   *                   type: string
+   *                   example: "Internal server error"
+   */
+  router.post('/:orderId', (req, res) => orderController.submitOrder(req, res));
+
   return router;
 }

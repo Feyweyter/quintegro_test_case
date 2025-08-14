@@ -131,4 +131,31 @@ export class OrderController {
       return res.status(500).json({ error: 'Internal server error' });
     }
   }
+
+  async submitOrder(req: Request, res: Response) {
+    try {
+      const userId = this.extractUserIdFromToken(req);
+      
+      if (!userId) {
+        return res.status(403).json({ error: 'Invalid or missing authentication token' });
+      }
+
+      const { orderId } = req.params;
+
+      if (!orderId) {
+        return res.status(400).json({ error: 'Order ID is required' });
+      }
+
+      const success = await this.orderService.submitOrder(orderId, userId);
+
+      if (!success) {
+        return res.status(404).json({ error: 'Order not found or access denied' });
+      }
+
+      return res.status(200).send();
+    } catch (error) {
+      console.error('Submit order error:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 }

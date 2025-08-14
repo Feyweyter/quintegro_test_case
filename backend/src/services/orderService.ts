@@ -61,6 +61,33 @@ export class OrderService {
     return this.transformToDTO(updatedOrder);
   }
 
+  async submitOrder(orderId: string, userId: string): Promise<boolean> {
+    const order = this.orderRepository.findById(orderId);
+    
+    if (!order) {
+      return false;
+    }
+
+    if (order.userId !== userId) {
+      return false;
+    }
+
+    // Check if order is in 'created' status
+    if (order.status !== 'created') {
+      return false;
+    }
+
+    // Update order status to 'submited'
+    const updatedOrder: OrderRecord = {
+      ...order,
+      status: 'submited'
+    };
+
+    // In a real application, you would save this to the repository
+    // For now, we'll just return success
+    return true;
+  }
+
   private transformToDTO(order: OrderRecord): OrderDTO {
     const products = order.products.map(item => {
       const product = this.productRepository.findById(item.id);

@@ -3,7 +3,8 @@ import {
   Box,
   Typography,
   CircularProgress,
-  Alert
+  Alert,
+  Button
 } from '@mui/material'
 import OrderListItem from './OrderListItem'
 import OrderSum from './OrderSum'
@@ -94,6 +95,32 @@ const OrderList: React.FC = () => {
     )
   }
 
+  const handleSubmitOrder = async (orderId: string) => {
+    try {
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        console.error('No authentication token found')
+        return
+      }
+
+      const response = await fetch(`/api/order/${orderId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.status === 200) {
+        // Reload the order list
+        fetchOrders()
+      } else {
+        console.error('Failed to submit order:', response.statusText)
+      }
+    } catch (error) {
+      console.error('Error submitting order:', error)
+    }
+  }
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -145,6 +172,19 @@ const OrderList: React.FC = () => {
           ))}
           
           <OrderSum orderId={order.orderId} products={order.products} />
+          
+          {order.status === 'created' && (
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleSubmitOrder(order.orderId)}
+                sx={{ minWidth: 120 }}
+              >
+                Submit Order
+              </Button>
+            </Box>
+          )}
         </Box>
       ))}
     </Box>
