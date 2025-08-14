@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
+import { delayMiddleware } from './middleware/delayMiddleware';
 import { createAuthRoutes } from './routes/authRoutes';
 import { createOrderRoutes } from './routes/orderRoutes';
 import { createPromoRoutes } from './routes/promoRoutes';
@@ -29,6 +30,9 @@ export class App {
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
+    
+    // Add 3-second delay to all API requests
+    this.app.use(delayMiddleware(3000));
     
     // Serve static files for product images
     this.app.use('/productImg', express.static('public/productImg'));
