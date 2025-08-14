@@ -2,6 +2,16 @@ import { Request, Response } from 'express';
 import { OrderService } from '../services/orderService';
 import { AuthService } from '../services/authService';
 
+interface ProductItem {
+  id: string;
+  amount: number;
+  price: number;
+}
+
+interface OrderSumRequest {
+  products: ProductItem[];
+}
+
 export class OrderController {
   constructor(
     private orderService: OrderService,
@@ -58,6 +68,39 @@ export class OrderController {
       return res.status(200).json(order);
     } catch (error) {
       console.error('Get order by id error:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+  }
+
+  async calculateOrderSum(req: Request, res: Response) {
+    try {
+      const userId = this.extractUserIdFromToken(req);
+      
+      if (!userId) {
+        return res.status(403).json({ error: 'Invalid or missing authentication token' });
+      }
+
+      const { orderId } = req.params;
+      const { products } = req.body as OrderSumRequest;
+
+      if (!products || !Array.isArray(products)) {
+        return res.status(400).json({ error: 'Products array is required' });
+      }
+
+      // Validate products structure
+      for (const product of products) {
+        if (!product.id || typeof product.amount !== 'number' || typeof product.price !== 'number') {
+          return res.status(400).json({ error: 'Invalid product structure. Each product must have id, amount, and price' });
+        }
+        if (product.amount < 0 || product.price < 0) {
+          return res.status(400).json({ error: 'Amount and price must be non-negative' });
+        }
+      }
+
+      const sum = this.orderService.calculateOrderSum(products);
+      return res.status(200).json(sum);
+    } catch (error) {
+      console.error('Calculate order sum error:', error);
       return res.status(500).json({ error: 'Internal server error' });
     }
   }

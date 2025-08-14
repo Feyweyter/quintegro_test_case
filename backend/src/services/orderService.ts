@@ -26,6 +26,12 @@ export class OrderService {
     return this.transformToDTO(order);
   }
 
+  calculateOrderSum(products: Array<{id: string, amount: number, price: number}>): number {
+    return products.reduce((total, product) => {
+      return total + (product.amount * product.price);
+    }, 0);
+  }
+
   private transformToDTO(order: OrderRecord): OrderDTO {
     const products = order.products.map(item => {
       const product = this.productRepository.findById(item.id);
