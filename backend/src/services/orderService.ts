@@ -1,10 +1,11 @@
-import { OrderRecord, OrderDTO, ProductRecord } from '../types/entities';
-import { IOrderRepository, IProductRepository } from '../repositories/interfaces';
+import { OrderRecord, OrderDTO, ProductRecord, PromoEntity } from '../types/entities';
+import { IOrderRepository, IProductRepository, IPromoRepository } from '../repositories/interfaces';
 
 export class OrderService {
   constructor(
     private orderRepository: IOrderRepository,
-    private productRepository: IProductRepository
+    private productRepository: IProductRepository,
+    private promoRepository: IPromoRepository
   ) {}
 
   async getOrdersByUserId(userId: string): Promise<OrderDTO[]> {
@@ -26,10 +27,30 @@ export class OrderService {
     return this.transformToDTO(order);
   }
 
-  calculateOrderSum(products: Array<{id: string, amount: number, price: number}>): number {
-    return products.reduce((total, product) => {
+  calculateOrderSum(products: Array<{id: string, amount: number, price: number}>, promoId?: string): number {
+    const subtotal = products.reduce((total, product) => {
       return total + (product.amount * product.price);
     }, 0);
+
+    if (!promoId) {
+      return subtotal;
+    }
+
+    // Validate promo
+    const promo = this.promoRepository.findById(promoId);
+    if (!promo) {
+      return subtotal; // Return original sum if promo not found
+    }
+
+    // Check if promo is expired
+    const currentTime = Date.now();
+    if (currentTime > promo.dueDate) {
+      return subtotal; // Return original sum if promo expired
+    }
+
+    // Apply discount
+    const discount = (subtotal * promo.discount) / 100;
+    return subtotal - discount;
   }
 
   async deleteProductFromOrder(orderId: string, productId: string, userId: string): Promise<OrderDTO | null> {

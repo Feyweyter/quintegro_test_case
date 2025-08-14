@@ -35,6 +35,7 @@ export interface OrderRecord {
     amount: number;
     price: number;
   }>;
+  promo?: PromoEntity;
 }
 
 export interface OrderDTO {
@@ -45,6 +46,7 @@ export interface OrderDTO {
     amount: number;
     price: number;
   }>;
+  promo?: PromoEntity;
 }
 
 export interface PromoEntity {

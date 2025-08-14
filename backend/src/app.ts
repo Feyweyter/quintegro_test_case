@@ -44,7 +44,7 @@ export class App {
 
     // Initialize services
     const authService = new AuthService(authRepository, userRepository);
-    const orderService = new OrderService(orderRepository, productRepository);
+    const orderService = new OrderService(orderRepository, productRepository, promoRepository);
     const promoService = new PromoService(promoRepository);
 
     // Initialize controllers

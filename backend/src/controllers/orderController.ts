@@ -10,6 +10,7 @@ interface ProductItem {
 
 interface OrderSumRequest {
   products: ProductItem[];
+  promo?: string;
 }
 
 export class OrderController {
@@ -81,7 +82,7 @@ export class OrderController {
       }
 
       const { orderId } = req.params;
-      const { products } = req.body as OrderSumRequest;
+      const { products, promo } = req.body as OrderSumRequest;
 
       if (!products || !Array.isArray(products)) {
         return res.status(400).json({ error: 'Products array is required' });
@@ -97,7 +98,7 @@ export class OrderController {
         }
       }
 
-      const sum = this.orderService.calculateOrderSum(products);
+      const sum = this.orderService.calculateOrderSum(products, promo);
       return res.status(200).json(sum);
     } catch (error) {
       console.error('Calculate order sum error:', error);

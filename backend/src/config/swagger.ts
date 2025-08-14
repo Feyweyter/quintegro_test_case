@@ -163,6 +163,9 @@ const options: swaggerJsdoc.Options = {
                 },
                 required: ['id', 'amount', 'price']
               }
+            },
+            promo: {
+              $ref: '#/components/schemas/PromoEntity'
             }
           },
           required: ['orderId', 'userId', 'status', 'createAt', 'products']
@@ -205,6 +208,9 @@ const options: swaggerJsdoc.Options = {
                 },
                 required: ['product', 'amount', 'price']
               }
+            },
+            promo: {
+              $ref: '#/components/schemas/PromoEntity'
             }
           },
           required: ['orderId', 'status', 'products']

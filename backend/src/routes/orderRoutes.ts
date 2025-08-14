@@ -148,6 +148,10 @@ export function createOrderRoutes(orderController: OrderController): Router {
    *                       minimum: 0
    *                       description: Product price
    *                       example: 1299.99
+   *               promo:
+   *                 type: string
+   *                 description: Optional promo code to apply discount
+   *                 example: "SAVE10"
    *     responses:
    *       200:
    *         description: Order sum calculated successfully
