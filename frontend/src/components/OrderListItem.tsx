@@ -42,10 +42,8 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(event.target.value, 10)
-    if (!isNaN(value)) {
-      handleAmountChange(value)
-    }
+    const value = Number(event.target.value);
+    handleAmountChange(value)
   }
 
   const handleDelete = async () => {
@@ -88,7 +86,6 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
     >
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {/* Product Image */}
           <Avatar
             src={product.image}
             variant="rounded"
@@ -103,7 +100,6 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
           >
             {product.title.charAt(0)}
           </Avatar>
-
           {/* Product Details */}
           <Box sx={{ flex: 1 }}>
             <Typography 
@@ -123,10 +119,7 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
               {product.description}
             </Typography>
           </Box>
-
-          {/* Amount Controls */}
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', gap: 1 }}>
-            {/* Price Display */}
             <Typography 
               variant="h6" 
               color="primary.main"
@@ -137,8 +130,6 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
             >
               ${price.toFixed(2)}
             </Typography>
-
-            {/* Amount Controls */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <IconButton
                 onClick={handleDecrement}
@@ -155,9 +146,7 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
               >
                 <Remove />
               </IconButton>
-              
               <TextField
-                type="number"
                 value={currentAmount}
                 onChange={handleInputChange}
                 inputProps={{
@@ -185,7 +174,6 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
                   }
                 }}
               />
-              
               <IconButton
                 onClick={handleIncrement}
                 disabled={currentAmount >= 10}
@@ -201,8 +189,6 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
               >
                 <Add />
               </IconButton>
-
-              {/* Delete Button */}
               <IconButton
                 onClick={handleDelete}
                 size="small"

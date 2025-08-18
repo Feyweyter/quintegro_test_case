@@ -6,7 +6,7 @@ export const errorTestMiddleware = (req: Request, res: Response, next: NextFunct
   requestCount++;
   
   // Return error on every 3rd request
-  if (requestCount % 3 === 0) {
+  if (requestCount % 5 === 0) {
     return res.status(500).json({ 
       error: 'Test planned server error',
       message: 'This is a planned error for testing purposes'
