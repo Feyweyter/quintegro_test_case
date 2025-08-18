@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import { delayMiddleware } from './middleware/delayMiddleware';
+import { errorTestMiddleware } from './middleware/errorTestMiddleware';
 import { createAuthRoutes } from './routes/authRoutes';
 import { createOrderRoutes } from './routes/orderRoutes';
 import { createPromoRoutes } from './routes/promoRoutes';
@@ -33,6 +34,9 @@ export class App {
     
     // Add delay to all API requests
     this.app.use(delayMiddleware(1500));
+    
+    // Add error test middleware (returns 500 on every 3rd request)
+    this.app.use(errorTestMiddleware);
     
     // Serve static files for product images
     this.app.use('/productImg', express.static('public/productImg'));
