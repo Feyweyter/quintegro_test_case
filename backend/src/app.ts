@@ -31,8 +31,8 @@ export class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
     
-    // Add 3-second delay to all API requests
-    this.app.use(delayMiddleware(3000));
+    // Add delay to all API requests
+    this.app.use(delayMiddleware(1500));
     
     // Serve static files for product images
     this.app.use('/productImg', express.static('public/productImg'));

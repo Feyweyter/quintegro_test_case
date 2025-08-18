@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
             Login
           </Typography>
           
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <Box sx={{ mt: 2 }}>
             <TextField
               fullWidth
               label="Login"
@@ -98,11 +98,10 @@ const LoginPage: React.FC = () => {
             )}
 
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              disabled={isLoading}
+              onClick={handleSubmit}
             >
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>

@@ -178,7 +178,7 @@ const OrderList: React.FC = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleSubmitOrder(order.orderId)}
+                onClick={() => console.log("SUBMIT: ", order.orderId)}
                 sx={{ minWidth: 120 }}
               >
                 Submit Order
