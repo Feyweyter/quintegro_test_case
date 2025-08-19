@@ -4,7 +4,6 @@ import {
   Typography,
   CircularProgress,
   Alert,
-  Button
 } from '@mui/material'
 import OrderListItem from './OrderListItem'
 import OrderSum from './OrderSum'
@@ -95,6 +94,7 @@ const OrderList: React.FC = () => {
     )
   }
 
+  // @ts-ignore
   const handleSubmitOrder = async (orderId: string) => {
     try {
       const token = localStorage.getItem('auth_token')
@@ -159,7 +159,7 @@ const OrderList: React.FC = () => {
             Order #{order.orderId} - {order.status}
           </Typography>
           
-          {order.products.map((item) => (
+          {order.products.map((item, index) => (
             <OrderListItem
               key={item.product.id}
               product={item.product}
@@ -168,23 +168,11 @@ const OrderList: React.FC = () => {
               orderId={order.orderId}
               onAmountChange={handleAmountChange}
               onDelete={handleDelete}
+              status={order.status}
+              isLast={index === order.products.length -1}
             />
           ))}
-          
           <OrderSum orderId={order.orderId} products={order.products} />
-          
-          {order.status === 'created' && (
-            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => console.log("SUBMIT: ", order.orderId)}
-                sx={{ minWidth: 120 }}
-              >
-                Submit Order
-              </Button>
-            </Box>
-          )}
         </Box>
       ))}
     </Box>

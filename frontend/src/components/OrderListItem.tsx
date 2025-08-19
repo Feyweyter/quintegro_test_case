@@ -6,7 +6,7 @@ import {
   Typography,
   TextField,
   IconButton,
-  Avatar
+  Avatar, Button
 } from '@mui/material'
 import { Add, Remove, Delete } from '@mui/icons-material'
 
@@ -22,9 +22,11 @@ interface OrderListItemProps {
   orderId: string
   onAmountChange: (productId: string, newAmount: number) => void
   onDelete: (productId: string) => void
+  status: string;
+  isLast: boolean;
 }
 
-const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, orderId, onAmountChange, onDelete }) => {
+const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, orderId, onAmountChange, onDelete, status, isLast }) => {
   const [currentAmount, setCurrentAmount] = useState(amount)
 
   const handleAmountChange = (newAmount: number) => {
@@ -72,6 +74,7 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
   }
 
   return (
+      <Box>
     <Card 
       sx={{ 
         mb: 2,
@@ -100,7 +103,6 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
           >
             {product.title.charAt(0)}
           </Avatar>
-          {/* Product Details */}
           <Box sx={{ flex: 1 }}>
             <Typography 
               variant="h6" 
@@ -209,6 +211,19 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
         </Box>
       </CardContent>
     </Card>
+        {isLast && status === 'created' && (
+            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => console.log("SUBMIT: ", orderId)}
+                  sx={{ minWidth: 120 }}
+              >
+                Submit Order
+              </Button>
+            </Box>
+        )}
+      </Box>
   )
 }
 
