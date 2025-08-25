@@ -1,7 +1,8 @@
 import { OrderService } from '../services/orderService';
 import { AuthService } from '../services/authService';
+import { PromoService } from '../services/promoService';
 
-export const createResolvers = (orderService: OrderService, authService: AuthService) => {
+export const createResolvers = (orderService: OrderService, authService: AuthService, promoService: PromoService) => {
   const extractUserIdFromToken = (context: any): string | null => {
     const authHeader = context.req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -61,10 +62,42 @@ export const createResolvers = (orderService: OrderService, authService: AuthSer
         } catch (error) {
           throw new Error('Failed to calculate order sum');
         }
+      },
+
+      promo: async (parent: any, { promoId }: { promoId: string }, context: any) => {
+        try {
+          const validation = promoService.validatePromo(promoId);
+          
+          if (!validation.isValid) {
+            if (validation.error === 'Promo not found') {
+              throw new Error('Promo not found');
+            } else if (validation.error === 'Promo expired') {
+              throw new Error('Promo expired');
+            }
+          }
+
+          return validation.promo;
+        } catch (error) {
+          throw new Error('Failed to fetch promo');
+        }
       }
     },
 
     Mutation: {
+      login: async (parent: any, { input }: { input: { login: string, password: string } }, context: any) => {
+        try {
+          const token = await authService.authenticateUser(input.login, input.password);
+          
+          if (!token) {
+            throw new Error('Invalid credentials');
+          }
+
+          return { token };
+        } catch (error) {
+          throw new Error('Login failed');
+        }
+      },
+
       submitOrder: async (parent: any, { orderId }: { orderId: string }, context: any) => {
         const userId = extractUserIdFromToken(context);
         if (!userId) {

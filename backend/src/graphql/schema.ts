@@ -39,13 +39,24 @@ export const typeDefs = gql`
     price: Float!
   }
 
+  input LoginInput {
+    login: String!
+    password: String!
+  }
+
+  type LoginResponse {
+    token: String!
+  }
+
   type Query {
     orders: [Order!]!
     order(orderId: ID!): Order
     orderSum(orderId: ID!, products: [ProductInput!]!, promo: String): Float!
+    promo(promoId: ID!): Promo
   }
 
   type Mutation {
+    login(input: LoginInput!): LoginResponse!
     submitOrder(orderId: ID!): Boolean!
     deleteProductFromOrder(orderId: ID!, productId: ID!): Order
   }

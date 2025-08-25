@@ -103,9 +103,10 @@ export class App {
     // Initialize services
     const authService = new AuthService(authRepository, userRepository);
     const orderService = new OrderService(orderRepository, productRepository, promoRepository);
+    const promoService = new PromoService(promoRepository);
 
     // Create Apollo Server
-    const apolloServer = createApolloServer(orderService, authService);
+    const apolloServer = createApolloServer(orderService, authService, promoService);
     await apolloServer.start();
 
     // Apply Apollo Server middleware

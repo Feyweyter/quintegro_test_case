@@ -3,9 +3,10 @@ import { typeDefs } from './schema';
 import { createResolvers } from './resolvers';
 import { OrderService } from '../services/orderService';
 import { AuthService } from '../services/authService';
+import { PromoService } from '../services/promoService';
 
-export const createApolloServer = (orderService: OrderService, authService: AuthService) => {
-  const resolvers = createResolvers(orderService, authService);
+export const createApolloServer = (orderService: OrderService, authService: AuthService, promoService: PromoService) => {
+  const resolvers = createResolvers(orderService, authService, promoService);
 
   return new ApolloServer({
     typeDefs,
