@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import { delayMiddleware } from './middleware/delayMiddleware';
 import { errorTestMiddleware } from './middleware/errorTestMiddleware';
+import { createApolloServer } from './graphql/server';
 import { createAuthRoutes } from './routes/authRoutes';
 import { createOrderRoutes } from './routes/orderRoutes';
 import { createPromoRoutes } from './routes/promoRoutes';
@@ -24,10 +25,11 @@ export class App {
     this.initializeMiddlewares();
     this.initializeRoutes();
     this.initializeSwagger();
+    this.initializeGraphQL();
   }
 
   private initializeMiddlewares(): void {
-    this.app.use(helmet());
+    this.app.use(helmet({ contentSecurityPolicy: (process.env.NODE_ENV === 'production') ? undefined : false }));
     this.app.use(cors());
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
@@ -90,11 +92,38 @@ export class App {
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
   }
 
+  private async initializeGraphQL(): Promise<void> {
+    // Initialize repositories
+    const userRepository = new InMemoryUserRepository();
+    const authRepository = new InMemoryAuthRepository();
+    const orderRepository = new InMemoryOrderRepository();
+    const productRepository = new InMemoryProductRepository();
+    const promoRepository = new InMemoryPromoRepository();
+
+    // Initialize services
+    const authService = new AuthService(authRepository, userRepository);
+    const orderService = new OrderService(orderRepository, productRepository, promoRepository);
+
+    // Create Apollo Server
+    const apolloServer = createApolloServer(orderService, authService);
+    await apolloServer.start();
+
+    // Apply Apollo Server middleware
+    apolloServer.applyMiddleware({ 
+      app: this.app, 
+      path: '/graphql',
+      cors: false // We're already using CORS middleware
+    });
+
+    console.log(`🚀 GraphQL server ready at http://localhost:3000${apolloServer.graphqlPath}`);
+  }
+
   public listen(port: number): void {
     this.app.listen(port, () => {
       console.log(`🚀 Server is running on port ${port}`);
       console.log(`📚 API Documentation available at http://localhost:${port}/api-docs`);
       console.log(`🔐 Login endpoint: http://localhost:${port}/api/login`);
+      console.log(`🔮 GraphQL Playground available at http://localhost:${port}/graphql`);
     });
   }
 }
