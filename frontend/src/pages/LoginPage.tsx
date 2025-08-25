@@ -8,39 +8,37 @@ import {
   Container
 } from '@mui/material'
 import { useHistory } from 'react-router-dom'
+import { useMutation } from '@apollo/client'
+import { LOGIN } from '../graphql/mutations'
 
 const LoginPage: React.FC = () => {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const history = useHistory()
 
+  const [loginMutation, { loading: isLoading }] = useMutation(LOGIN, {
+    onCompleted: (data) => {
+      localStorage.setItem('auth_token', data.login.token)
+      history.push('/')
+    },
+    onError: (error) => {
+      setError(error.message || 'An error occurred. Please try again.')
+    }
+  })
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
     setError('')
 
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ login, password }),
+      await loginMutation({
+        variables: {
+          input: { login, password }
+        }
       })
-
-      if (response.ok) {
-        const data = await response.json()
-        localStorage.setItem('auth_token', data.token)
-        history.push('/')
-      } else {
-        setError('Invalid credentials')
-      }
     } catch (err) {
-      setError('An error occurred. Please try again.')
-    } finally {
-      setIsLoading(false)
+      // Error is handled by onError callback
     }
   }
 

@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
   CircularProgress,
   Alert,
 } from '@mui/material'
+import { useQuery, useMutation } from '@apollo/client'
+import { GET_ORDERS } from '../graphql/queries'
+import { SUBMIT_ORDER, DELETE_PRODUCT_FROM_ORDER } from '../graphql/mutations'
 import OrderListItem from './OrderListItem'
 import OrderSum from './OrderSum'
 
@@ -29,48 +32,40 @@ interface Order {
 
 const OrderList: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchOrders()
-  }, [])
-
-  const fetchOrders = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const token = localStorage.getItem('auth_token')
-      if (!token) {
-        setError('Authentication required')
-        setLoading(false)
-        return
-      }
-
-      const response = await fetch('/api/order', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-
-      if (!response.ok) {
-        if (response.status === 403) {
-          setError('Access denied. Please login again.')
-        } else {
-          setError('Failed to fetch orders')
-        }
-        return
-      }
-
-      const data = await response.json()
-      setOrders(data)
-    } catch (err) {
-      setError('An error occurred while fetching orders')
-    } finally {
-      setLoading(false)
+  const { loading, error, data, refetch } = useQuery(GET_ORDERS, {
+    onCompleted: (data) => {
+      setOrders(data.orders || [])
+    },
+    onError: (error) => {
+      console.error('GraphQL error:', error)
     }
-  }
+  })
+
+  const [submitOrder] = useMutation(SUBMIT_ORDER, {
+    onCompleted: () => {
+      refetch()
+    },
+    onError: (error) => {
+      console.error('Failed to submit order:', error)
+    }
+  })
+
+  const [deleteProduct] = useMutation(DELETE_PRODUCT_FROM_ORDER, {
+    onCompleted: (data) => {
+      // Update local state with the returned order
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.orderId === data.deleteProductFromOrder.orderId 
+            ? data.deleteProductFromOrder 
+            : order
+        )
+      )
+    },
+    onError: (error) => {
+      console.error('Failed to delete product:', error)
+    }
+  })
 
   const handleAmountChange = (productId: string, newAmount: number) => {
     setOrders(prevOrders => 
@@ -94,28 +89,11 @@ const OrderList: React.FC = () => {
     )
   }
 
-  // @ts-ignore
   const handleSubmitOrder = async (orderId: string) => {
     try {
-      const token = localStorage.getItem('auth_token')
-      if (!token) {
-        console.error('No authentication token found')
-        return
-      }
-
-      const response = await fetch(`/api/order/${orderId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+      await submitOrder({
+        variables: { orderId }
       })
-
-      if (response.status === 200) {
-        // Reload the order list
-        fetchOrders()
-      } else {
-        console.error('Failed to submit order:', response.statusText)
-      }
     } catch (error) {
       console.error('Error submitting order:', error)
     }
@@ -132,7 +110,7 @@ const OrderList: React.FC = () => {
   if (error) {
     return (
       <Alert severity="error" sx={{ mb: 2 }}>
-        {error}
+        {error.message}
       </Alert>
     )
   }
@@ -168,6 +146,7 @@ const OrderList: React.FC = () => {
               orderId={order.orderId}
               onAmountChange={handleAmountChange}
               onDelete={handleDelete}
+              onSubmitOrder={handleSubmitOrder}
               status={order.status}
               isLast={index === order.products.length -1}
             />

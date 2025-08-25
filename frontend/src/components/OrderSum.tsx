@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import {
   Box,
   Typography,
   CircularProgress,
   Paper
 } from '@mui/material'
+import { useQuery } from '@apollo/client'
+import { GET_ORDER_SUM } from '../graphql/queries'
 
 interface Product {
   id: string
@@ -25,54 +27,23 @@ interface OrderSumProps {
 }
 
 const OrderSum: React.FC<OrderSumProps> = ({ orderId, products }) => {
-  const [sum, setSum] = useState<number | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  // Prepare products data for the GraphQL query
+  const productsData = products.map(item => ({
+    id: item.product.id,
+    amount: item.amount,
+    price: item.price
+  }))
 
-  const calculateSum = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      
-      const token = localStorage.getItem('auth_token')
-      if (!token) {
-        setError('Authentication required')
-        return
-      }
-
-      // Prepare products data for the API request
-      const productsData = products.map(item => ({
-        id: item.product.id,
-        amount: item.amount,
-        price: item.price
-      }))
-
-      const response = await fetch(`/api/order/${orderId}/sum`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ products: productsData })
-      })
-
-      if (response.ok) {
-        const result = await response.json()
-        setSum(result)
-      } else {
-        setError('Failed to calculate sum')
-      }
-    } catch (err) {
-      setError('Error calculating sum')
-    } finally {
-      setLoading(false)
+  const { loading, error, data } = useQuery(GET_ORDER_SUM, {
+    variables: {
+      orderId,
+      products: productsData
+    },
+    skip: products.length === 0,
+    onError: (error) => {
+      console.error('Failed to calculate order sum:', error)
     }
-  }
-
-  // Calculate sum whenever products change
-  useEffect(() => {
-    calculateSum()
-  }, [products])
+  })
 
   if (loading) {
     return (
@@ -88,7 +59,7 @@ const OrderSum: React.FC<OrderSumProps> = ({ orderId, products }) => {
   if (error) {
     return (
       <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-        {error}
+        {error.message || 'Error calculating sum'}
       </Typography>
     )
   }
@@ -96,7 +67,7 @@ const OrderSum: React.FC<OrderSumProps> = ({ orderId, products }) => {
   return (
     <Paper sx={{ p: 2, mt: 2, backgroundColor: 'primary.light', color: 'primary.contrastText' }}>
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        Order Total: ${sum?.toFixed(2) || '0.00'}
+        Order Total: ${data?.orderSum?.toFixed(2) || '0.00'}
       </Typography>
     </Paper>
   )

@@ -9,6 +9,8 @@ import {
   Avatar, Button
 } from '@mui/material'
 import { Add, Remove, Delete } from '@mui/icons-material'
+import { useMutation } from '@apollo/client'
+import { DELETE_PRODUCT_FROM_ORDER } from '../graphql/mutations'
 
 interface OrderListItemProps {
   product: {
@@ -22,12 +24,22 @@ interface OrderListItemProps {
   orderId: string
   onAmountChange: (productId: string, newAmount: number) => void
   onDelete: (productId: string) => void
+  onSubmitOrder?: (orderId: string) => void
   status: string;
   isLast: boolean;
 }
 
-const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, orderId, onAmountChange, onDelete, status, isLast }) => {
+const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, orderId, onAmountChange, onDelete, onSubmitOrder, status, isLast }) => {
   const [currentAmount, setCurrentAmount] = useState(amount)
+
+  const [deleteProduct] = useMutation(DELETE_PRODUCT_FROM_ORDER, {
+    onCompleted: () => {
+      onDelete(product.id)
+    },
+    onError: (error) => {
+      console.error('Failed to delete product:', error)
+    }
+  })
 
   const handleAmountChange = (newAmount: number) => {
     const clampedAmount = Math.max(1, Math.min(10, newAmount))
@@ -50,24 +62,12 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
 
   const handleDelete = async () => {
     try {
-      const token = localStorage.getItem('auth_token')
-      if (!token) {
-        console.error('No authentication token found')
-        return
-      }
-
-      const response = await fetch(`/api/order/${orderId}/${product.id}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
+      await deleteProduct({
+        variables: {
+          orderId,
+          productId: product.id
         }
       })
-
-      if (response.ok) {
-        onDelete(product.id)
-      } else {
-        console.error('Failed to delete product:', response.statusText)
-      }
     } catch (error) {
       console.error('Error deleting product:', error)
     }
@@ -211,12 +211,12 @@ const OrderListItem: React.FC<OrderListItemProps> = ({ product, amount, price, o
         </Box>
       </CardContent>
     </Card>
-        {isLast && status === 'created' && (
+        {isLast && status === 'created' && onSubmitOrder && (
             <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => console.log("SUBMIT: ", orderId)}
+                  onClick={() => onSubmitOrder(orderId)}
                   sx={{ minWidth: 120 }}
               >
                 Submit Order
