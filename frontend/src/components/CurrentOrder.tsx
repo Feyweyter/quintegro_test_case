@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {
-  IconButton,
-  Badge,
-  Tooltip
-} from '@mui/material'
-import { ShoppingCart } from '@mui/icons-material'
+import { ShoppingCart } from 'lucide-react'
 import { useHistory } from 'react-router-dom'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 
 const CurrentOrder: React.FC = () => {
   const [itemCount, setItemCount] = useState(0)
@@ -26,35 +23,21 @@ const CurrentOrder: React.FC = () => {
     history.push('/order')
   }
 
-  // Only show badge if there are items
-  if (itemCount === 0) {
-    return (
-      <Tooltip title="Current Order">
-        <IconButton
-          onClick={handleClick}
-          size="large"
-          sx={{ ml: 2 }}
-          color="inherit"
-        >
-          <ShoppingCart />
-        </IconButton>
-      </Tooltip>
-    )
-  }
-
   return (
-    <Tooltip title="Current Order">
-      <IconButton
-        onClick={handleClick}
-        size="large"
-        sx={{ ml: 2 }}
-        color="inherit"
-      >
-        <Badge badgeContent={itemCount} color="secondary">
-          <ShoppingCart />
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={handleClick}
+      className="text-gray-700 hover:bg-gray-100 relative"
+      title="Current Order"
+    >
+      <ShoppingCart className="h-5 w-5" />
+      {itemCount > 0 && (
+        <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 text-xs bg-blue-500 text-white">
+          {itemCount}
         </Badge>
-      </IconButton>
-    </Tooltip>
+      )}
+    </Button>
   )
 }
 

@@ -1,21 +1,20 @@
 import React from 'react'
-import { Typography, Paper, Box } from '@mui/material'
 
 const HomePage: React.FC = () => {
   return (
-    <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
+    <div>
+      <h1 className="text-3xl font-bold mb-8 text-gray-900">
         Welcome to Quintegro
-      </Typography>
-      <Box sx={{ p: 3, mt: 2 }}>
-        <Typography variant="body1" paragraph>
+      </h1>
+      <div className="p-8 mt-6 bg-white rounded-lg border border-gray-200 shadow-sm">
+        <p className="text-lg mb-4 text-gray-700">
           This is the home page of the Quintegro application.
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Built with React 18, TypeScript 5, Material-UI 7, and Vite.
-        </Typography>
-      </Box>
-    </Box>
+        </p>
+        <p className="text-sm text-gray-600">
+          Built with React 18, TypeScript 5, shadcn/ui, and Vite.
+        </p>
+      </div>
+    </div>
   )
 }
 

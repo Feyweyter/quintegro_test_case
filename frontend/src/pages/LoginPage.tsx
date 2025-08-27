@@ -1,15 +1,10 @@
 import React, { useState } from 'react'
-import {
-  Box,
-  Paper,
-  TextField,
-  Button,
-  Typography,
-  Container
-} from '@mui/material'
 import { useHistory } from 'react-router-dom'
 import { useMutation } from '@apollo/client'
 import { LOGIN } from '../graphql/mutations'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 const LoginPage: React.FC = () => {
   const [login, setLogin] = useState('')
@@ -43,70 +38,58 @@ const LoginPage: React.FC = () => {
   }
 
   return (
-    <Container maxWidth="sm">
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100%',
-          py: 4
-        }}
-      >
-        <Paper
-          elevation={3}
-          sx={{
-            p: 4,
-            width: '100%',
-            maxWidth: 400
-          }}
-        >
-          <Typography variant="h5" component="h1" gutterBottom align="center">
-            Login
-          </Typography>
-          
-          <Box sx={{ mt: 2 }}>
-            <TextField
-              fullWidth
-              label="Login"
-              variant="outlined"
-              margin="normal"
-              value={login}
-              onChange={(e) => setLogin(e.target.value)}
-              required
-              disabled={isLoading}
-            />
+    <div className="flex justify-center items-center min-h-full py-8">
+      <Card className="w-full max-w-md shadow-lg">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-center text-2xl font-semibold text-gray-900">Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Login</label>
+              <Input
+                type="text"
+                placeholder="Enter your login"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                required
+                disabled={isLoading}
+                className="h-11"
+              />
+            </div>
             
-            <TextField
-              fullWidth
-              label="Password"
-              type="password"
-              variant="outlined"
-              margin="normal"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Password</label>
+              <Input
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+                className="h-11"
+              />
+            </div>
 
             {error && (
-              <Typography color="error" variant="body2" sx={{ mt: 2 }}>
-                {error}
-              </Typography>
+              <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                <p className="text-sm text-red-600">
+                  {error}
+                </p>
+              </div>
             )}
 
             <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={handleSubmit}
+              type="submit"
+              className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium"
+              disabled={isLoading}
             >
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
-          </Box>
-        </Paper>
-      </Box>
-    </Container>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 

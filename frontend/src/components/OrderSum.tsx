@@ -1,12 +1,7 @@
 import React from 'react'
-import {
-  Box,
-  Typography,
-  CircularProgress,
-  Paper
-} from '@mui/material'
 import { useQuery } from '@apollo/client'
 import { GET_ORDER_SUM } from '../graphql/queries'
+import { Loader2 } from 'lucide-react'
 
 interface Product {
   id: string
@@ -47,29 +42,31 @@ const OrderSum: React.FC<OrderSumProps> = ({ orderId, products }) => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 2 }}>
-        <CircularProgress size={20} />
-        <Typography variant="body2" color="text.secondary">
+      <div className="flex items-center gap-2 mt-6">
+        <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
+        <span className="text-sm text-gray-600">
           Calculating...
-        </Typography>
-      </Box>
+        </span>
+      </div>
     )
   }
 
   if (error) {
     return (
-      <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-        {error.message || 'Error calculating sum'}
-      </Typography>
+      <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-md mt-6">
+        <p className="text-sm">
+          {error.message || 'Error calculating sum'}
+        </p>
+      </div>
     )
   }
 
   return (
-    <Paper sx={{ p: 2, mt: 2, backgroundColor: 'primary.light', color: 'primary.contrastText' }}>
-      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+    <div className="bg-blue-600 text-white p-6 mt-6 rounded-lg shadow-md">
+      <h3 className="text-xl font-bold">
         Order Total: ${data?.orderSum?.toFixed(2) || '0.00'}
-      </Typography>
-    </Paper>
+      </h3>
+    </div>
   )
 }
 
