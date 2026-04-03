@@ -112,6 +112,31 @@ export class InMemoryOrderRepository implements IOrderRepository {
     }
   ];
 
+  reset(): void {
+    this.orders = [
+      {
+        orderId: "order-1",
+        userId: "user-1",
+        status: "finished",
+        createAt: Date.now() - 86400000,
+        products: [
+          { id: "product-1", amount: 1, price: 1299.99 },
+          { id: "product-3", amount: 2, price: 199.99 }
+        ]
+      },
+      {
+        orderId: "order-2",
+        userId: "user-1",
+        status: "created",
+        createAt: Date.now(),
+        products: [
+          { id: "product-2", amount: 1, price: 899.99 },
+          { id: "product-4", amount: 1, price: 599.99 }
+        ]
+      }
+    ];
+  }
+
   findById(orderId: string): OrderRecord | undefined {
     return this.orders.find(order => order.orderId === orderId);
   }

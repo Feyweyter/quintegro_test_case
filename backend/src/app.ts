@@ -9,6 +9,7 @@ import { createApolloServer } from './graphql/server';
 import { createAuthRoutes } from './routes/authRoutes';
 import { createOrderRoutes } from './routes/orderRoutes';
 import { createPromoRoutes } from './routes/promoRoutes';
+import { createResetRoutes } from './routes/resetRoutes';
 import { AuthController } from './controllers/authController';
 import { OrderController } from './controllers/orderController';
 import { PromoController } from './controllers/promoController';
@@ -19,6 +20,7 @@ import { InMemoryUserRepository, InMemoryAuthRepository, InMemoryOrderRepository
 
 export class App {
   public app: express.Application;
+  private orderRepositories: InMemoryOrderRepository[] = [];
 
   constructor() {
     this.app = express();
@@ -51,6 +53,7 @@ export class App {
     const orderRepository = new InMemoryOrderRepository();
     const productRepository = new InMemoryProductRepository();
     const promoRepository = new InMemoryPromoRepository();
+    this.orderRepositories.push(orderRepository);
 
     // Initialize services
     const authService = new AuthService(authRepository, userRepository);
@@ -66,6 +69,7 @@ export class App {
     this.app.use('/api', createAuthRoutes(authController));
     this.app.use('/api/order', createOrderRoutes(orderController));
     this.app.use('/api/promo', createPromoRoutes(promoController));
+    this.app.use('/reset/orders', createResetRoutes(this.orderRepositories));
 
     // Health check endpoint
     this.app.get('/health', (req, res) => {
@@ -99,6 +103,7 @@ export class App {
     const orderRepository = new InMemoryOrderRepository();
     const productRepository = new InMemoryProductRepository();
     const promoRepository = new InMemoryPromoRepository();
+    this.orderRepositories.push(orderRepository);
 
     // Initialize services
     const authService = new AuthService(authRepository, userRepository);
