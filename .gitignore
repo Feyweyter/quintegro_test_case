@@ -4,9 +4,6 @@
 **/.idea
 .tool-versions
 
-# openvscode
-.openvscode-server
-
 # AI
 .claude
 
