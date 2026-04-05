@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quintegro Interview Case</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 0 24px;
+      color: #1a1a1a;
+    }
+    h1 { font-size: 1.6rem; margin-bottom: 40px; }
+    .links { display: flex; flex-direction: column; gap: 20px; }
+    a.card {
+      display: block;
+      padding: 20px 24px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    a.card:hover { border-color: #888; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    a.card .title { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    a.card .desc { font-size: 0.9rem; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Welcome to Quintegro interview case</h1>
+  <div class="links">
+    <a class="card" href="/runtime">
+      <div class="title">Application → /runtime</div>
+      <div class="desc">The React frontend connected to the backend API and GraphQL server.</div>
+    </a>
+    <a class="card" href="/code">
+      <div class="title">Code Editor → /code</div>
+      <div class="desc">VS Code in the browser (OpenVSCode Server) with the project workspace pre-loaded.</div>
+    </a>
+  </div>
+</body>
+</html>

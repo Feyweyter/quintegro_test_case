@@ -7,4 +7,4 @@ RUN npm ci
 
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "[ ! -f node_modules/.bin/ts-node ] && npm ci; npm run dev"]
