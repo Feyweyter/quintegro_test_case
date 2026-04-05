@@ -15,13 +15,20 @@ export default defineConfig({
     port: 3001,
     host: true,
     proxy: {
-      '/api': {
+      '/runtime/api': {
         target: 'http://backend:3000',
-        changeOrigin: true
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/runtime/, '')
       },
-      '/productImg': {
+      '/runtime/graphql': {
         target: 'http://backend:3000',
-        changeOrigin: true
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/runtime/, '')
+      },
+      '/runtime/productImg': {
+        target: 'http://backend:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/runtime/, '')
       }
     }
   }

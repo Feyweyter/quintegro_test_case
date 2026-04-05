@@ -7,7 +7,7 @@ import OrderPage from './pages/OrderPage'
 
 const App: React.FC = () => {
   return (
-    <Router>
+    <Router basename="/runtime">
       <MainLayout>
         <Switch>
           <Route exact path="/" component={HomePage} />
