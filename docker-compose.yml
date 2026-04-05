@@ -1,10 +1,23 @@
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+      - frontend
+      - code-server
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     env_file:
       - ./backend/.env
     volumes:
@@ -17,8 +30,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
     depends_on:
       - backend
     volumes:
@@ -28,12 +41,12 @@ services:
       - app-network
 
   code-server:
-    image: codercom/code-server:latest
-    ports:
-      - "9090:8080"
+    image: gitpod/openvscode-server:latest
+    expose:
+      - "3000"
     volumes:
-      - .:/home/coder/project
-    command: --auth none
+      - .:/home/workspace
+    command: --without-connection-token --server-base-path /code /home/workspace
     networks:
       - app-network
 
