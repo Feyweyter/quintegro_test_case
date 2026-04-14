@@ -1,0 +1,23 @@
+{
+  "security.workspace.trust.enabled": false,
+
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+  "typescript.disableAutomaticTypeAcquisition": true,
+
+  "eslint.enable": false,
+
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {},
+
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true,
+    "**/.next/**": true
+  },
+  "extensions.autoCheckUpdates": false,
+  "extensions.autoUpdate": false,
+  "typescript.tsserver.maxTsServerMemory": 512
+}
